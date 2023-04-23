@@ -1,6 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urlparse
+from selenium import webdriver
 
 def examination(domain):
     response = requests.get(domain)
@@ -47,8 +48,110 @@ def examinationTags(url):
     else:
         return -1
     
-        
+def link_in_meta_scrip_tags(url):
+    differences = []
+    response = requests.get(url)
+    html_content = response.text
+    soup = BeautifulSoup(html_content,"html.parser")
+    meta_tags = soup.find_all("meta")
+    script_tags = soup.find_all("script")
+    domain = urlparse(url).netloc
     
-#examination('https://hostinger.mx/')
-examinationTags('https://hostinger.mx/')
+    for tag in meta_tags + script_tags:
+        if "src" in tag.attrs:
+            src_domain = urlparse(tag["src"]).netloc
+            if src_domain != domain:
+                differences.append(1)
+        if "href" in tag.attrs:
+            href_domain = urlparse(tag["href"]).netloc
+            if href_domain != domain:
+                differences.append(1)
+    tot_differences = len(differences)
+    tot = len(meta_tags+script_tags)
+    if tot_differences < (tot*.31):
+        return 1
+    if tot_differences < (tot*67):
+        return -1
+    else:
+        return 0
+
+def server_form_handler(url):
+    response = requests.get(url)
+    soup = BeautifulSoup(response.text, 'html.parser')
+    form = soup.find("form")
+    if form and "action" in form.attrs:
+        action_url = urlparse(form["action"])
+        if action_url.netloc != urlparse(url).netloc:
+            return 0
+        if action_url.netloc == " ":
+            return -1
+        else:
+            return 1
+
+def mail_or_mailto(url):
+    response = requests.get(url)
+    soup = BeautifulSoup(response.text, 'html.parser')
+    mail_links = soup.find_all(string=lambda text:text and("mail()"in text or "mailto" in text))
+    if mail_links:
+        for link in mail_links:
+            print(link)
+    else:
+        print("no links")
+
+def redirections(url):
+    num_redirections = 0
+    response = requests.get(url,allow_redirects=True)
+    while response.history:
+        num_redirections += 1
+        response = requests.get(response.url,allow_redirects=True)
+    print(num_redirections)
+    if num_redirections <= 1:
+        return 0
+    else:
+        return 1
+
+
+def mouseOver(url):
+    response = requests.get(url)
+    html = response.content
+    soup = BeautifulSoup(html,'html.parser')
+    mouseover_links = soup.find_all('a',attrs={'onmouseover':True})
+    
+    for link in mouseover_links:
+        if "window.status" in link['onmouseover']:
+            return 0
+    return 1
+
+def rigthClick(url):
+    response = requests.get(url)
+    html = response.content
+    soup = BeautifulSoup(html,'html.parser')
+    bodies = soup.find_all('body')
+    for body in bodies:
+        if 'oncontextmenu' in body.attrs:
+            return 0
+    
+    return 1
+
+def pop_up_window(url):
+    driver = webdriver.Chrome()
+    driver.get(url)
+    if len(driver.window_handles) > 1:
+        driver.quit()
+        return 0
+    else:
+        driver.quit()
+        return 1
+
+def iframe(url):
+    response = requests.get(url)
+    html = response.content
+    soup = BeautifulSoup(html,'html.parser')
+    iframes = soup.find_all('iframe')
+    print(len(iframes))
+    if len(iframes) > 0:
+        return 0
+    else:
+        return 1
+
     
