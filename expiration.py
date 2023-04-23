@@ -1,5 +1,6 @@
 import whois
 from datetime import datetime
+import dns.resolver
 def expiration_domain_time(domain):
     delta = 0
     rest_time = 0
@@ -39,5 +40,16 @@ def age_of_domain(url):
     print(type(age_of_domain))
     #sprint(domain)
     
-
-age_of_domain('http://fing.uach.mx/')
+def DNS_record(url):
+    domain = whois.whois(url)
+    record = domain["domain_name"]
+    
+    url_without_http = url[7:]
+    url_without_http = url_without_http[:-1]
+    
+    answers = dns.resolver.resolve(url_without_http)
+    name = answers.canonical_name
+    if record in name:
+        return -1
+    else:
+        return 1

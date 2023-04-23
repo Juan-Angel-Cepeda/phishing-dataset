@@ -43,7 +43,7 @@ elif model == 'Extra Trees Classifier':
     
 domain = st.text_input('Paste your domain')
 
-
+st.divider()
 having_IP_address = st.selectbox(
     'The page to analyze is an ip address insted of a domain',
     ['yes','no']
@@ -53,6 +53,57 @@ if having_IP_address == 'yes':
 else:
     having_IP_address = 0
 
+st.divider()
+st.text('Go to: https://www.similarweb.com/ and paste the domain to analyze.')
+web_traffic = st.selectbox("Does the domain analized is listed in ranking 100,000?",
+                        ['Yes','No','domain was not found'])
+if web_traffic == 'Yes':
+    web_traffic = -1
+elif web_traffic == 'No':
+    web_traffic = 0
+elif web_traffic == 'domain was not found':
+    web_traffic == 1
+else:
+    web_traffic = 0
+    
+st.divider()
+favicon = st.selectbox(
+    'The page to analyze has a favIcon',
+    ['yes','no']   
+)
+if favicon == 'yes':
+    favicon = 1
+else:
+    favicon = 0
+
+st.divider()
+st.text('Go to google and write "site:"example.com" replacing example by the domain to analyze.')
+google_index = st.selectbox('Does the searched domain shows in the results?',
+                            ['yes','no'])
+if google_index == 'yes':
+    google_index = 1
+else:
+    google_index = -1
+
+st.divider()
+st.text('How did you reach the website to analyze?')
+pointing_page = st.selectbox('Through a link in a known web, others (social, text message,not known website) or you trust the website',
+             ['Known website','Trust','other'])
+if pointing_page == 'Known website':
+    pointing_page = -1
+elif pointing_page == 'Trust':
+    pointing_page = 0
+else:
+    pointing_page = 1
+
+st.divider()
+st.text('Go to https://phishtank.org/ and check if the website is listed there')
+statisitcal_report = st.selectbox('Is it listed?',
+                            ['yes','no'])
+if statisitcal_report == 'yes':
+    statisitcal_report = -1
+else:
+    statisitcal_report = 1
 
 URL_Length = transforms.longURL(domain)
 Shortening_Service = transforms.shortener(domain)
@@ -62,16 +113,6 @@ prefis_suffix = transforms.adding_prefix(domain)
 having_sub_domain = transforms.dots_in_domain(domain)
 SSLfinal_state = sockets.sslauthor(domain)
 Domain_registration_length = expiration.expiration_domain_time(domain)
-
-favicon = st.selectbox(
-    'The page to analyze has a favIcon',
-    ['yes','no']   
-)
-if favicon == 'yes':
-    favicon = 1
-else:
-    favicon = 0
-    
 using_non_standard_port = sockets.ports_results(domain)
 Https_token = transforms.https(domain)
 RequestURL = examination.examination(domain)
@@ -86,3 +127,10 @@ right_click = examination.rigthClick(domain)
 pop_up_window = examination.pop_up_window(domain)
 I_frame = examination.iframe(domain)
 age_od_domain = expiration.age_of_domain(domain)
+DNS_record = expiration.DNS_record(domain)
+page_rank = -1 * web_traffic
+if page_rank == 0:
+    page_rank = -1
+
+
+    
