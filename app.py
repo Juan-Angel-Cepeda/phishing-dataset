@@ -1,10 +1,6 @@
 import streamlit as st
-import pandas as pd
 import prediction
-import transforms
-import sockets
-import expiration
-import examination
+import web_scrapp
 
 st.set_page_config(
     page_title= "Phishing predicitons",
@@ -44,6 +40,7 @@ elif model == 'Extra Trees Classifier':
 domain = st.text_input('Paste your domain')
 
 st.divider()
+
 having_IP_address = st.selectbox(
     'The page to analyze is an ip address insted of a domain',
     ['yes','no']
@@ -54,6 +51,7 @@ else:
     having_IP_address = 0
 
 st.divider()
+
 st.text('Go to: https://www.similarweb.com/ and paste the domain to analyze.')
 web_traffic = st.selectbox("Does the domain analized is listed in ranking 100,000?",
                         ['Yes','No','domain was not found'])
@@ -67,6 +65,7 @@ else:
     web_traffic = 0
     
 st.divider()
+
 favicon = st.selectbox(
     'The page to analyze has a favIcon',
     ['yes','no']   
@@ -77,6 +76,7 @@ else:
     favicon = 0
 
 st.divider()
+
 st.text('Go to google and write "site:"example.com" replacing example by the domain to analyze.')
 google_index = st.selectbox('Does the searched domain shows in the results?',
                             ['yes','no'])
@@ -86,6 +86,7 @@ else:
     google_index = -1
 
 st.divider()
+
 st.text('How did you reach the website to analyze?')
 pointing_page = st.selectbox('Through a link in a known web, others (social, text message,not known website) or you trust the website',
              ['Known website','Trust','other'])
@@ -97,6 +98,7 @@ else:
     pointing_page = 1
 
 st.divider()
+
 st.text('Go to https://phishtank.org/ and check if the website is listed there')
 statisitcal_report = st.selectbox('Is it listed?',
                             ['yes','no'])
@@ -104,33 +106,28 @@ if statisitcal_report == 'yes':
     statisitcal_report = -1
 else:
     statisitcal_report = 1
-
-URL_Length = transforms.longURL(domain)
-Shortening_Service = transforms.shortener(domain)
-having_At_Symbol = transforms.havingAt(domain)
-double_slash_redirecting = transforms.redirecting(domain)
-prefis_suffix = transforms.adding_prefix(domain)
-having_sub_domain = transforms.dots_in_domain(domain)
-SSLfinal_state = sockets.sslauthor(domain)
-Domain_registration_length = expiration.expiration_domain_time(domain)
-using_non_standard_port = sockets.ports_results(domain)
-Https_token = transforms.https(domain)
-RequestURL = examination.examination(domain)
-URL_Anchor = examination.examinationTags(domain)
-Link_in_tags = examination.link_in_meta_scrip_tags(domain)
-SFH = examination.server_form_handler(domain)
-submitting_to_email = examination.mail_or_mailto(domain)
-abnormal = expiration.abnormal(domain)
-redirect = examination.redirections(domain)
-on_mouseover = examination.mouseOver(domain)
-right_click = examination.rigthClick(domain)
-pop_up_window = examination.pop_up_window(domain)
-I_frame = examination.iframe(domain)
-age_od_domain = expiration.age_of_domain(domain)
-DNS_record = expiration.DNS_record(domain)
+    
 page_rank = -1 * web_traffic
 if page_rank == 0:
     page_rank = -1
 
+if st.button('Predict'):
+    data = web_scrapp.do_domain_scrappng(
+        domain,
+        having_IP_address,
+        web_traffic,
+        favicon,
+        google_index,
+        pointing_page,
+        statisitcal_report,
+        page_rank
+        )
+    preditcion_result = prediction.preditct(data,model)
+    if preditcion_result == -1:
+        st.error('The website is phishing')    
+    else:
+        st.success('The website is secure')
+    
+#boton con predicción lanza la función de scrapp
 
     
