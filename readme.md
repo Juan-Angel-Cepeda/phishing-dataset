@@ -11,9 +11,42 @@ Este proyecto tiene como objetivo clasificar los sitios web como seguros o inseg
 
 El objetivo de este proyecto es desplegar una aplicación funcional utilizando Streamlit que pueda clasificar los sitios web como seguros o inseguros utilizando tres modelos diferentes: "Support Vector Machine", "Random Forest Classifier" y "Extra Trees". La aplicación debe obtener los datos necesarios para las características de predicción casi automáticamente mediante web scraping pasando como parametro el link de la pagina. En este caso, las características solicitadas al usuarion fueron aquellas en donde se neceistaba el API de Alexa y RankWebsites.
 
-## Conjunto de datos
+## Data-set
 
-El conjunto de datos utilizado en este proyecto contiene 11.055 muestras y 30 características. Una descripción de las características se puede encontrar en `docs/Phishing Websites Features.docx`, junto con el conjunto de datos en sí.
+El conjunto de datos utilizado en este proyecto contiene 11.055 muestras y 30 features. La descripción completa de las features se puede encontrar en `docs/Phishing Websites Features.docx`, junto con el conjunto de datos en sí.
+
+### Features
+- having_IP_Address
+- URL_Length    
+- Shortining_Service 
+- having_At_Symbol 
+- double_slash_redirection
+- Prefix_Suffix 
+- having_Sub_Domain  
+- SSLfinal_State  
+- Domain_registeration_length
+- Favicon
+- port
+- HTTPS_token
+- Request_URL
+- URL_of_Anchor 
+- Links_in_tags 
+- SFH  
+- Submitting_to_email
+- Abnormal_URL
+- Redirect
+- on_mouseover
+- RightClick
+- popUpWidnow
+- Iframw
+- age_of_domain
+- DNSRecord 
+- web_traffic  
+- Page_Rank
+- Google_Index
+- Links_pointing_to_page 
+- Statistical_report
+- Result
 
 ## Tecnologías
 
