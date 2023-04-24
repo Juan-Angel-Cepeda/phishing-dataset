@@ -132,6 +132,5 @@ if st.button('Predict'):
     except:
         st.error('Website does not have enough information')
     
-#boton con predicción lanza la función de scrapp
 
     
