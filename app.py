@@ -123,13 +123,13 @@ if st.button('Predict'):
         statisitcal_report,
         page_rank
         )
-    preditcion_result = prediction.preditct(data,model)
     try:
+        preditcion_result = prediction.preditct(data,model)
         if preditcion_result == -1:
             st.error('The website is phishing')    
         else:
             st.success('The website is secure')
-    finally:
+    except:
         st.error('Website does not have enough information')
     
 #boton con predicción lanza la función de scrapp

@@ -60,8 +60,8 @@ def DNS_record(url):
             url_without_http = url[8:]
         else:
             url_without_http = url[7:]
-        
-        url_without_http = url_without_http[:-1]
+        if '/' in url_without_http:
+            url_without_http = url_without_http[:-1]
         answers = dns.resolver.resolve(url_without_http)
         name = answers.canonical_name
 
