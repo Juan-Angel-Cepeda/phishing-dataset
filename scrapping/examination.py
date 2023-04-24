@@ -4,11 +4,12 @@ from urllib.parse import urlparse
 from selenium import webdriver
 
 def examination(domain):
-    response = requests.get(domain)
-    soup = BeautifulSoup(response.content,'html.parser')
-    images = soup.find_all('img')
-    results = []
     try:
+        response = requests.get(domain)
+        soup = BeautifulSoup(response.content,'html.parser')
+        images = soup.find_all('img')
+        results = []
+    
         for img in images:
             image_url = img['src']
             image_domain = urlparse(image_url).netloc
@@ -27,12 +28,13 @@ def examination(domain):
         return -1
         
 def examinationTags(url):
-    response = requests.get(url)
-    soup = BeautifulSoup(response.content,'html.parser')
-    domain = urlparse(url).netloc
-    results = []
-    iteration = []
     try:
+        response = requests.get(url)
+        soup = BeautifulSoup(response.content,'html.parser')
+        domain = urlparse(url).netloc
+        results = []
+        iteration = []
+    
         for a in soup.find_all('a'):
             iteration.append(1)
             href = a.get('href')
@@ -54,14 +56,15 @@ def examinationTags(url):
         return -1
 
 def link_in_meta_scrip_tags(url):
-    differences = []
-    response = requests.get(url)
-    html_content = response.text
-    soup = BeautifulSoup(html_content,"html.parser")
-    meta_tags = soup.find_all("meta")
-    script_tags = soup.find_all("script")
-    domain = urlparse(url).netloc
     try:
+        differences = []
+        response = requests.get(url)
+        html_content = response.text
+        soup = BeautifulSoup(html_content,"html.parser")
+        meta_tags = soup.find_all("meta")
+        script_tags = soup.find_all("script")
+        domain = urlparse(url).netloc
+    
         for tag in meta_tags + script_tags:
             if "src" in tag.attrs:
                 src_domain = urlparse(tag["src"]).netloc
@@ -83,10 +86,11 @@ def link_in_meta_scrip_tags(url):
         return 0
 
 def server_form_handler(url):
-    response = requests.get(url)
-    soup = BeautifulSoup(response.text, 'html.parser')
-    form = soup.find("form")
     try:
+        response = requests.get(url)
+        soup = BeautifulSoup(response.text, 'html.parser')
+        form = soup.find("form")
+    
         if form and "action" in form.attrs:
             action_url = urlparse(form["action"])
             if action_url.netloc != urlparse(url).netloc:
@@ -99,9 +103,10 @@ def server_form_handler(url):
         return 1
 
 def mail_or_mailto(url):
-    response = requests.get(url)
-    soup = BeautifulSoup(response.text, 'html.parser')
     try:
+        response = requests.get(url)
+        soup = BeautifulSoup(response.text, 'html.parser')
+    
         mail_links = soup.find_all(string=lambda text:text and("mail()"in text or "mailto" in text))
         if len(mail_links) != 0 :
             return -1
@@ -111,9 +116,10 @@ def mail_or_mailto(url):
         return 1
 
 def redirections(url):
-    num_redirections = 0
-    response = requests.get(url,allow_redirects=True)
     try:
+        num_redirections = 0
+        response = requests.get(url,allow_redirects=True)
+    
         while response.history:
             num_redirections += 1
             response = requests.get(response.url,allow_redirects=True)
@@ -126,11 +132,12 @@ def redirections(url):
 
 
 def mouseOver(url):
-    response = requests.get(url)
-    html = response.content
-    soup = BeautifulSoup(html,'html.parser')
-    mouseover_links = soup.find_all('a',attrs={'onmouseover':True})
     try:
+        response = requests.get(url)
+        html = response.content
+        soup = BeautifulSoup(html,'html.parser')
+        mouseover_links = soup.find_all('a',attrs={'onmouseover':True})
+    
         for link in mouseover_links:
             if "window.status" in link['onmouseover']:
                 return 0
@@ -138,11 +145,12 @@ def mouseOver(url):
         return 1
 
 def rigthClick(url):
-    response = requests.get(url)
-    html = response.content
-    soup = BeautifulSoup(html,'html.parser')
-    bodies = soup.find_all('body')
     try:
+        response = requests.get(url)
+        html = response.content
+        soup = BeautifulSoup(html,'html.parser')
+        bodies = soup.find_all('body')
+    
         for body in bodies:
             if 'oncontextmenu' in body.attrs:
                 return 0
@@ -150,9 +158,10 @@ def rigthClick(url):
         return 1
 
 def pop_up_window(url):
-    driver = webdriver.Chrome()
-    driver.get(url)
     try:
+        driver = webdriver.Chrome()
+        driver.get(url)
+    
         if len(driver.window_handles) > 1:
             driver.quit()
             return 0
@@ -163,16 +172,17 @@ def pop_up_window(url):
         return 1
 
 def iframe(url):
-    response = requests.get(url)
-    html = response.content
-    soup = BeautifulSoup(html,'html.parser')
-    iframes = soup.find_all('iframe')
-    print(len(iframes))
     try:
-     if len(iframes) > 0:
-         return 0
-     else:
-         return 1
+        response = requests.get(url)
+        html = response.content
+        soup = BeautifulSoup(html,'html.parser')
+        iframes = soup.find_all('iframe')
+        print(len(iframes))
+    
+        if len(iframes) > 0:
+            return 0
+        else:
+            return 1
     finally:
         return 1
 

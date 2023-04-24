@@ -112,6 +112,7 @@ if page_rank == 0:
     page_rank = -1
 
 if st.button('Predict'):
+    st.spinner('Checking ports, domains, DNS, etc...')
     data = web_scrapp.do_domain_scrappng(
         domain,
         having_IP_address,
@@ -123,10 +124,13 @@ if st.button('Predict'):
         page_rank
         )
     preditcion_result = prediction.preditct(data,model)
-    if preditcion_result == -1:
-        st.error('The website is phishing')    
-    else:
-        st.success('The website is secure')
+    try:
+        if preditcion_result == -1:
+            st.error('The website is phishing')    
+        else:
+            st.success('The website is secure')
+    finally:
+        st.error('Website does not have enough information')
     
 #boton con predicción lanza la función de scrapp
 

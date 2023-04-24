@@ -2,12 +2,12 @@ import socket
 import ssl
 
 def ports_results(domain):
-    create_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-    count = 0
-    ports = [21,22,23,80,443,445,1433,1521,3306,3389]
-    results = []
-    
     try:
+        create_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+        count = 0
+        ports = [21,22,23,80,443,445,1433,1521,3306,3389]
+        results = []
+    
         for port in ports:
             destination = (domain,port)
             result = create_socket.connect_ex(destination)

@@ -27,10 +27,9 @@ def expiration_domain_time(domain):
         return 1
 
 def abnormal(url):
-    domain = whois.whois(url)
-    print(domain["domain_name"])
-    print(url)
     try:
+        domain = whois.whois(url)
+    
         for name in domain["domain_name"]:
             if name in url:
                 return 0
@@ -54,15 +53,18 @@ def age_of_domain(url):
     
     
 def DNS_record(url):
-    domain = whois.whois(url)
-    record = domain["domain_name"]
-    
-    url_without_http = url[8:]
-    url_without_http = url_without_http[:-1]
-    
-    answers = dns.resolver.resolve(url_without_http)
-    name = answers.canonical_name
     try:
+        domain = whois.whois(url)
+        record = domain["domain_name"]
+        if 'https' in domain:
+            url_without_http = url[8:]
+        else:
+            url_without_http = url[7:]
+        
+        url_without_http = url_without_http[:-1]
+        answers = dns.resolver.resolve(url_without_http)
+        name = answers.canonical_name
+
         if record in name:
             return -1
         else:
@@ -70,4 +72,3 @@ def DNS_record(url):
     finally:
         return 1
 
-print(expiration_domain_time('https://komarutesting.site/'))
